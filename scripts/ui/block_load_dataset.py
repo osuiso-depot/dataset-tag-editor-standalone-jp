@@ -47,15 +47,22 @@ class LoadDatasetUI(UIBase):
                             label=t("load_dataset.replace_new_line_with_comma.label"),
                         )
                     with gr.Column():
+                        interrogator_choices = [
+                            (t("load_dataset.interrogator_choices.no"), "No"),
+                            (t("load_dataset.interrogator_choices.if_empty"), "If Empty"),
+                            (t("load_dataset.interrogator_choices.overwrite"), "Overwrite"),
+                            (t("load_dataset.interrogator_choices.prepend"), "Prepend"),
+                            (t("load_dataset.interrogator_choices.append"), "Append"),
+                        ]
+
+                        # 設定値がchoicesに存在しない場合のフォールバック
+                        initial_interrogator_value = cfg_general.use_interrogator
+                        if initial_interrogator_value not in [choice for choice in interrogator_choices]:
+                            initial_interrogator_value = "No" # デフォルト値
+
                         self.rb_use_interrogator = gr.Radio(
-                            choices=[
-                                t("load_dataset.interrogator_choices.no"),
-                                t("load_dataset.interrogator_choices.if_empty"),
-                                t("load_dataset.interrogator_choices.overwrite"),
-                                t("load_dataset.interrogator_choices.prepend"),
-                                t("load_dataset.interrogator_choices.append"),
-                            ],
-                            value=cfg_general.use_interrogator,
+                            choices=interrogator_choices,
+                            value=initial_interrogator_value,
                             label=t("load_dataset.use_interrogator_caption.label"),
                         )
 
@@ -65,7 +72,7 @@ class LoadDatasetUI(UIBase):
                             if name in dte_instance.INTERROGATOR_NAMES
                         ]
 
-                        self.dd_intterogator_names = gr.Dropdown(
+                        self.dd_interrogator_names = gr.Dropdown(
                             label=t("load_dataset.interrogators.label"),
                             choices=dte_instance.INTERROGATOR_NAMES,
                             value=valid_interrogators if valid_interrogators else None,
@@ -175,7 +182,7 @@ class LoadDatasetUI(UIBase):
                 self.cb_load_caption_from_filename,
                 self.cb_replace_new_line_with_comma,
                 self.rb_use_interrogator,
-                self.dd_intterogator_names,
+                self.dd_interrogator_names,
                 self.sl_custom_threshold_booru,
                 self.cb_use_custom_threshold_waifu,
                 self.sl_custom_threshold_waifu,

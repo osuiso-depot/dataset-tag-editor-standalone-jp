@@ -52,7 +52,7 @@ def read_config(name: str, config_type: Type, default: NamedTuple, compat_func=N
 
 def read_general_config():
     # for compatibility
-    generalcfg_intterogator_names = [
+    generalcfg_interrogator_names = [
         ("use_blip_to_prefill", "BLIP"),
         ("use_git_to_prefill", "GIT-large-COCO"),
         ("use_booru_to_prefill", "DeepDanbooru"),
@@ -63,7 +63,7 @@ def read_general_config():
     def compat_func(d: dict[str, Any]):
         if "use_interrogator_names" in d.keys():
             return d
-        for cfg in generalcfg_intterogator_names:
+        for cfg in generalcfg_interrogator_names:
             if d.get(cfg[0]):
                 use_interrogator_names.append(cfg[1])
         d["use_interrogator_names"] = use_interrogator_names
@@ -209,7 +209,7 @@ def on_ui_tabs():
             ui.load_dataset.cb_load_caption_from_filename,
             ui.load_dataset.cb_replace_new_line_with_comma,
             ui.load_dataset.rb_use_interrogator,
-            ui.load_dataset.dd_intterogator_names,
+            ui.load_dataset.dd_interrogator_names,
             ui.load_dataset.sl_custom_threshold_booru,
             ui.load_dataset.cb_use_custom_threshold_waifu,
             ui.load_dataset.sl_custom_threshold_waifu,

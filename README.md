@@ -1,3 +1,14 @@
+# ↓ [#トラブルシューティング](#トラブルシューティング) を見よう！
+> gradio.exceptions.InvalidPathError: Cannot move ...
+
+# 日本語化対応について
+* しました
+* Gradio5移行(UIが変わった)
+* 多言語化対応整備
+  * i18nライブラリの取扱いと実装上、元リポジトリとコードの互換性はありません
+
+* 言語切り替えは**設定**から**UI言語**で切り替えられます。
+
 # Dataset Tag Editor Standalone
 
 [English Readme](README.md)

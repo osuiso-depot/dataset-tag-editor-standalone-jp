@@ -206,3 +206,8 @@ button.custom-button{
     font-size: 85%;
     opacity: 0.85;
 }
+
+/* Adjust checkbox label padding within CheckboxGroup */
+[data-testid="checkbox-group"] > label {
+    padding: 0 0 0 0;
+}

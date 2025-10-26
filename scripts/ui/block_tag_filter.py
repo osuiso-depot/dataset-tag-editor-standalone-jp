@@ -92,7 +92,8 @@ class TagFilterUI:
             self.btn_deselect_visibles = gr.Button(value=t("tag_filter.deselect_visible_tags.label"))
 
         self.cbg_tags = gr.CheckboxGroup(
-            label=t("tag_filter.filter_images_by_tags.label"), interactive=True
+            label=t("tag_filter.filter_images_by_tags.label"), interactive=True, elem_classes=["my-checkbox-group"]
+
         )
 
     def after_filter_update(
