@@ -1,5 +1,6 @@
-gradio==4.28.3
+gradio==5.34.2
 transformers>=4.27.4
+tokenizers>=0.15
 requests
 pillow
 numpy
