@@ -254,7 +254,7 @@ def on_ui_tabs():
             ui.edit_caption_of_selected_image.cb_copy_caption_automatically,
             ui.edit_caption_of_selected_image.cb_sort_caption_on_save,
             ui.edit_caption_of_selected_image.cb_ask_save_when_caption_changed,
-            ui.edit_caption_of_selected_image.dd_intterogator_names_si,
+            ui.edit_caption_of_selected_image.dd_interrogator_names_si,
             ui.edit_caption_of_selected_image.rb_sort_by,
             ui.edit_caption_of_selected_image.rb_sort_order,
         ]

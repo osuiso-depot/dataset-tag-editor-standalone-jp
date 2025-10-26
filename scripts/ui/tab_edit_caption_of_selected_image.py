@@ -8,6 +8,7 @@ from utilities import wrap_queued_call
 from .ui_common import *
 from .uibase import UIBase
 from tokenizer import clip_tokenizer
+from scripts.ui.i18n_helper import t
 
 if TYPE_CHECKING:
     from .ui_classes import *
@@ -31,9 +32,9 @@ class EditCaptionOfSelectedImageUI(UIBase):
             self.btn_hidden_save_caption = gr.Button(
                 elem_id="btn_hidden_save_caption"
             )
-        with gr.Tab(label="Read Caption from Selected Image"):
+        with gr.Tab(label=t("edit_caption.read_caption_tab.label")):
             self.tb_caption = gr.Textbox(
-                label="Caption of Selected Image",
+                label=t("edit_caption.caption_of_selected_image.label"),
                 interactive=False,
                 lines=6,
                 elem_id="dte_caption",
@@ -42,23 +43,30 @@ class EditCaptionOfSelectedImageUI(UIBase):
                 value="<span>0/75</span>", elem_id="dte_caption_counter", elem_classes=["token-counter"]
             )
             with gr.Row():
-                self.btn_copy_caption = gr.Button(value="Copy and Overwrite")
-                self.btn_prepend_caption = gr.Button(value="Prepend")
-                self.btn_append_caption = gr.Button(value="Append")
+                self.btn_copy_caption = gr.Button(value=t("edit_caption.copy_and_overwrite.label"))
+                self.btn_prepend_caption = gr.Button(value=t("edit_caption.prepend.label"))
+                self.btn_append_caption = gr.Button(value=t("edit_caption.append.label"))
 
-        with gr.Tab(label="Interrogate Selected Image"):
-            with gr.Row():
-                self.dd_intterogator_names_si = gr.Dropdown(
-                    label="Interrogator",
-                    choices=dte_instance.INTERROGATOR_NAMES,
-                    value=cfg_edit_selected.use_interrogator_name,
-                    interactive=True,
-                    multiselect=False,
-                )
-                self.btn_interrogate_si = gr.Button(value="Interrogate")
+            with gr.Tab(label=t("edit_caption.interrogate_tab.label")):
+                with gr.Row():
+                    # 設定値がchoicesに含まれるかチェック
+                    interrogator_value = (
+                        cfg_edit_selected.use_interrogator_name
+                        if cfg_edit_selected.use_interrogator_name in dte_instance.INTERROGATOR_NAMES
+                        else None
+                    )
+
+                    self.dd_interrogator_names_si = gr.Dropdown(
+                        label=t("edit_caption.interrogator.label"),
+                        choices=dte_instance.INTERROGATOR_NAMES,
+                        value=interrogator_value,
+                        interactive=True,
+                        multiselect=False,
+                    )
+                    self.btn_interrogate_si = gr.Button(value=t("edit_caption.interrogate_button.label"))
             with gr.Column():
                 self.tb_interrogate = gr.Textbox(
-                    label="Interrogate Result",
+                    label=t("edit_caption.interrogate_result.label"),
                     interactive=True,
                     lines=6,
                     elem_id="dte_interrogate",
@@ -67,37 +75,37 @@ class EditCaptionOfSelectedImageUI(UIBase):
                     value="<span>0/75</span>", elem_id="dte_interrogate_counter", elem_classes=["token-counter"]
                 )
             with gr.Row():
-                self.btn_copy_interrogate = gr.Button(value="Copy and Overwrite")
-                self.btn_prepend_interrogate = gr.Button(value="Prepend")
-                self.btn_append_interrogate = gr.Button(value="Append")
+                self.btn_copy_interrogate = gr.Button(value=t("edit_caption.copy_and_overwrite.label"))
+                self.btn_prepend_interrogate = gr.Button(value=t("edit_caption.prepend.label"))
+                self.btn_append_interrogate = gr.Button(value=t("edit_caption.append.label"))
         with gr.Column():
             self.cb_copy_caption_automatically = gr.Checkbox(
                 value=cfg_edit_selected.auto_copy,
-                label="Copy caption from selected images automatically",
+                label=t("edit_caption.copy_caption_automatically.label"),
             )
             self.cb_sort_caption_on_save = gr.Checkbox(
-                value=cfg_edit_selected.sort_on_save, label="Sort caption on save"
+                value=cfg_edit_selected.sort_on_save, label=t("edit_caption.sort_caption_on_save.label")
             )
             with gr.Row(visible=cfg_edit_selected.sort_on_save) as self.sort_settings:
                 self.rb_sort_by = gr.Radio(
                     choices=[e.value for e in SortBy],
                     value=cfg_edit_selected.sort_by,
                     interactive=True,
-                    label="Sort by",
+                    label=t("edit_caption.sort_by.label"),
                 )
                 self.rb_sort_order = gr.Radio(
                     choices=[e.value for e in SortOrder],
                     value=cfg_edit_selected.sort_order,
                     interactive=True,
-                    label="Sort Order",
+                    label=t("edit_caption.sort_order.label"),
                 )
             self.cb_ask_save_when_caption_changed = gr.Checkbox(
                 value=cfg_edit_selected.warn_change_not_saved,
-                label="Warn if changes in caption is not saved",
+                label=t("edit_caption.warn_change_not_saved.label"),
             )
         with gr.Column():
             self.tb_edit_caption = gr.Textbox(
-                label="Edit Caption",
+                label=t("edit_caption.edit_caption.label"),
                 interactive=True,
                 lines=6,
                 elem_id="dte_edit_caption",
@@ -106,14 +114,14 @@ class EditCaptionOfSelectedImageUI(UIBase):
                 value="<span>0/75</span>", elem_id="dte_edit_caption_counter", elem_classes=["token-counter"]
             )
         self.btn_apply_changes_selected_image = gr.Button(
-            value="Apply changes to selected image", variant="primary"
+            value=t("edit_caption.apply_changes_selected_image.label"), variant="primary"
         )
         self.btn_apply_changes_all_images = gr.Button(
-            value="Apply changes to ALL displayed images", variant="primary"
+            value=t("edit_caption.apply_changes_all_images.label"), variant="primary"
         )
 
         gr.HTML(
-            """Changes are not applied to the text files until the "Save all changes" button is pressed."""
+            value=t("edit_caption.changes_not_applied_note.html")
         )
 
     def set_callbacks(
@@ -252,7 +260,7 @@ class EditCaptionOfSelectedImageUI(UIBase):
         self.btn_interrogate_si.click(
             fn=interrogate_selected_image,
             inputs=[
-                self.dd_intterogator_names_si,
+                self.dd_interrogator_names_si,
                 load_dataset.sl_custom_threshold_booru,
                 load_dataset.cb_use_custom_threshold_waifu,
                 load_dataset.sl_custom_threshold_waifu,

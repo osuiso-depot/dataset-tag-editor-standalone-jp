@@ -5,6 +5,7 @@ import gradio as gr
 from .ui_common import *
 from .uibase import UIBase
 from .block_tag_select import TagSelectUI
+from scripts.ui.i18n_helper import t
 
 if TYPE_CHECKING:
     from .ui_classes import *
@@ -21,77 +22,61 @@ class BatchEditCaptionsUI(UIBase):
     def create_ui(
         self, cfg_batch_edit, get_filters: Callable[[], list[dte_module.filters.Filter]]
     ):
-        with gr.Tab(label="Search and Replace"):
+        with gr.Tab(label=t("batch_edit.search_and_replace_tab.label")):
             with gr.Column(variant="panel"):
-                gr.HTML("Edit common tags.")
+                gr.HTML(t("batch_edit.edit_common_tags.html"))
                 self.cb_show_only_tags_selected = gr.Checkbox(
                     value=cfg_batch_edit.show_only_selected,
-                    label="Show only the tags selected in the Positive Filter",
+                    label=t("batch_edit.show_only_tags_selected.label"),
                 )
                 self.show_only_selected_tags = cfg_batch_edit.show_only_selected
-                self.tb_common_tags = gr.Textbox(label="Common Tags", interactive=False)
-                self.tb_edit_tags = gr.Textbox(label="Edit Tags", interactive=True)
+                self.tb_common_tags = gr.Textbox(label=t("batch_edit.common_tags.label"), interactive=False)
+                self.tb_edit_tags = gr.Textbox(label=t("batch_edit.edit_tags.label"), interactive=True)
                 self.cb_prepend_tags = gr.Checkbox(
-                    value=cfg_batch_edit.prepend, label="Prepend additional tags"
+                    value=cfg_batch_edit.prepend, label=t("batch_edit.prepend_additional_tags.label")
                 )
                 self.btn_apply_edit_tags = gr.Button(
-                    value="Apply changes to filtered images", variant="primary"
+                    value=t("batch_edit.apply_changes_to_filtered_images.label"), variant="primary"
                 )
                 with gr.Accordion(
-                    label="Show description of how to edit tags", open=False
+                    label=t("batch_edit.show_description_of_how_to_edit_tags.label"), open=False
                 ):
                     gr.HTML(
-                        value="""
-                    1. The tags common to all displayed images are shown in comma separated style.<br>
-                    2. When changes are applied, all tags in each displayed images are replaced.<br>
-                    3. If you change some tags into blank, they will be erased.<br>
-                    4. If you add some tags to the end, they will be added to the end/beginning of the text file.<br>
-                    5. Changes are not applied to the text files until the "Save all changes" button is pressed.<br>
-                    <b>ex A.</b><br>
-                    &emsp;Original Text = "A, A, B, C"&emsp;Common Tags = "B, A"&emsp;Edit Tags = "X, Y"<br>
-                    &emsp;Result = "Y, Y, X, C"&emsp;(B->X, A->Y)<br>
-                    <b>ex B.</b><br>
-                    &emsp;Original Text = "A, B, C"&emsp;Common Tags = "(nothing)"&emsp;Edit Tags = "X, Y"<br>
-                    &emsp;Result = "A, B, C, X, Y"&emsp;(add X and Y to the end (default))<br>
-                    &emsp;Result = "X, Y, A, B, C"&emsp;(add X and Y to the beginning ("Prepend additional tags" checked))<br>
-                    <b>ex C.</b><br>
-                    &emsp;Original Text = "A, B, C, D, E"&emsp;Common Tags = "A, B, D"&emsp;Edit Tags = ", X, "<br>
-                    &emsp;Result = "X, C, E"&emsp;(A->"", B->X, D->"")<br>
-                    """
+                        value=t("batch_edit.edit_tags_description.html")
                     )
             with gr.Column(variant="panel"):
-                gr.HTML("Search and Replace for all images displayed.")
+                gr.HTML(t("batch_edit.search_and_replace_for_all_images_displayed.html"))
                 self.tb_sr_search_tags = gr.Textbox(
-                    label="Search Text", interactive=True
+                    label=t("batch_edit.search_text.label"), interactive=True
                 )
                 self.tb_sr_replace_tags = gr.Textbox(
-                    label="Replace Text", interactive=True
+                    label=t("batch_edit.replace_text.label"), interactive=True
                 )
                 self.cb_use_regex = gr.Checkbox(
-                    label="Use regex", value=cfg_batch_edit.use_regex
+                    label=t("batch_edit.use_regex.label"), value=cfg_batch_edit.use_regex
                 )
                 self.rb_sr_replace_target = gr.Radio(
-                    ["Only Selected Tags", "Each Tags", "Entire Caption"],
+                    [t("batch_edit.replace_target.only_selected_tags"), t("batch_edit.replace_target.each_tags"), t("batch_edit.replace_target.entire_caption")],
                     value=cfg_batch_edit.target,
-                    label="Search and Replace in",
+                    label=t("batch_edit.search_and_replace_in.label"),
                     interactive=True,
                 )
                 self.tb_sr_selected_tags = gr.Textbox(
-                    label="Selected Tags", interactive=False, lines=2
+                    label=t("batch_edit.selected_tags.label"), interactive=False, lines=2
                 )
                 self.btn_apply_sr_tags = gr.Button(
-                    value="Search and Replace", variant="primary"
+                    value=t("batch_edit.search_and_replace_button.label"), variant="primary"
                 )
-        with gr.Tab(label="Remove"):
+        with gr.Tab(label=t("batch_edit.remove_tab.label")):
             with gr.Column(variant="panel"):
-                gr.HTML("Remove <b>duplicate</b> tags from the images displayed.")
+                gr.HTML(t("batch_edit.remove_duplicate_tags_html"))
                 self.btn_remove_duplicate = gr.Button(
-                    value="Remove duplicate tags", variant="primary"
+                    value=t("batch_edit.remove_duplicate_tags_button.label"), variant="primary"
                 )
             with gr.Column(variant="panel"):
-                gr.HTML("Remove <b>selected</b> tags from the images displayed.")
+                gr.HTML(t("batch_edit.remove_selected_tags_html"))
                 self.btn_remove_selected = gr.Button(
-                    value="Remove selected tags", variant="primary"
+                    value=t("batch_edit.remove_selected_tags_button.label"), variant="primary"
                 )
                 self.tag_select_ui_remove.create_ui(
                     get_filters,
@@ -101,30 +86,30 @@ class BatchEditCaptionsUI(UIBase):
                     cfg_batch_edit.sw_suffix,
                     cfg_batch_edit.sw_regex,
                 )
-        with gr.Tab(label="Extras"):
+        with gr.Tab(label=t("batch_edit.extras_tab.label")):
             with gr.Column(variant="panel"):
-                gr.HTML("Sort tags in the images displayed.")
+                gr.HTML(t("batch_edit.sort_tags_html"))
                 with gr.Row():
                     self.rb_sort_by = gr.Radio(
                         choices=[e.value for e in SortBy],
                         value=cfg_batch_edit.batch_sort_by,
                         interactive=True,
-                        label="Sort by",
+                        label=t("batch_edit.sort_by.label"),
                     )
                     self.rb_sort_order = gr.Radio(
                         choices=[e.value for e in SortOrder],
                         value=cfg_batch_edit.batch_sort_order,
                         interactive=True,
-                        label="Sort Order",
+                        label=t("batch_edit.sort_order.label"),
                     )
-                self.btn_sort_selected = gr.Button(value="Sort tags", variant="primary")
+                self.btn_sort_selected = gr.Button(value=t("batch_edit.sort_tags_button.label"), variant="primary")
             with gr.Column(variant="panel"):
-                gr.HTML("Truncate tags by token count.")
+                gr.HTML(t("batch_edit.truncate_tags_html"))
                 self.nb_token_count = gr.Number(
                     value=cfg_batch_edit.token_count, precision=0
                 )
                 self.btn_truncate_by_token = gr.Button(
-                    value="Truncate tags by token count", variant="primary"
+                    value=t("batch_edit.truncate_tags_by_token_count_button.label"), variant="primary"
                 )
 
     def set_callbacks(

@@ -26,7 +26,7 @@ class Config(NamedTuple):
     enable:bool = True
     preset:str = 'custom'
     params:Params = Params()
-    
+
 
 class BLIPSettingUI:
     def create_param_ui(self):
@@ -38,6 +38,11 @@ class BLIPSettingUI:
         default:Config
     ):
         self.cb_enable = gr.Checkbox(label='Use custom params', value=default.enable, interactive=True)
-        self.dd_preset = gr.Dropdown(list(presets.keys()), value=default.preset)
+        preset_value = default.preset if default.preset in presets.keys() else None
+        self.dd_preset = gr.Dropdown(
+            list(presets.keys()),
+            value=preset_value,
+            allow_custom_value=False  # 明示的に指定
+        )
         with gr.Column(variant='panel'):
             self.create_param_ui()

@@ -5,6 +5,7 @@ import gradio as gr
 
 from .ui_common import *
 from .uibase import UIBase
+from scripts.ui.i18n_helper import t
 
 if TYPE_CHECKING:
     from .ui_classes import *
@@ -50,7 +51,7 @@ class MoveOrDeleteFilesUI(UIBase):
         self.btn_move_or_delete_delete_files = gr.Button(
             value="DELETE File(s)", variant="primary"
         )
-    
+
     def update_current_move_or_delete_target_num(self):
         if self.update_func:
             text = self.update_func(self.target_data)
@@ -67,16 +68,16 @@ class MoveOrDeleteFilesUI(UIBase):
     ):
         def _get_current_move_or_delete_target_num(text:str):
             self.target_data = text
-            if self.target_data == "Selected One":
-                self.current_target_txt = f"Target dataset num: {1 if dataset_gallery.selected_index != -1 else 0}"
-            elif self.target_data == "All Displayed Ones":
+            if self.target_data == t("move_delete.target_data.selected_one"):
+                self.current_target_txt = t("move_delete.target_dataset_num.label", num=(1 if dataset_gallery.selected_index != -1 else 0))
+            elif self.target_data == t("move_delete.target_data.all_displayed_ones"):
                 img_paths = dte_instance.get_filtered_imgpaths(filters=get_filters())
-                self.current_target_txt = f"Target dataset num: {len(img_paths)}"
+                self.current_target_txt = t("move_delete.target_dataset_num.label", num=len(img_paths))
             else:
-                self.current_target_txt = f"Target dataset num: 0"
+                self.current_target_txt = t("move_delete.target_dataset_num.label", num=0)
             return self.current_target_txt
 
-        
+
         self.update_func = _get_current_move_or_delete_target_num
 
         self.update_args = {
@@ -93,7 +94,7 @@ class MoveOrDeleteFilesUI(UIBase):
             move_img = "Image File" in target_file
             move_txt = "Caption Text File" in target_file
             move_bak = "Caption Backup File" in target_file
-            if target_data == "Selected One":
+            if target_data == t("move_delete.target_data.selected_one"):
                 img_path = dataset_gallery.selected_path
                 if img_path:
                     dte_instance.move_dataset_file(
@@ -101,7 +102,7 @@ class MoveOrDeleteFilesUI(UIBase):
                     )
                     dte_instance.construct_tag_infos()
 
-            elif target_data == "All Displayed Ones":
+            elif target_data == t("move_delete.target_data.all_displayed_ones"):
                 dte_instance.move_dataset(
                     dest_dir, caption_ext, get_filters(), move_img, move_txt, move_bak
                 )
@@ -120,10 +121,10 @@ class MoveOrDeleteFilesUI(UIBase):
         ).then(**self.update_args)
 
         def delete_files(target_data: str, target_file: list[str], caption_ext: str):
-            delete_img = "Image File" in target_file
-            delete_txt = "Caption Text File" in target_file
-            delete_bak = "Caption Backup File" in target_file
-            if target_data == "Selected One":
+            delete_img = t("move_delete.target_file.image_file") in target_file
+            delete_txt = t("move_delete.target_file.caption_text_file") in target_file
+            delete_bak = t("move_delete.target_file.caption_backup_file") in target_file
+            if target_data == t("move_delete.target_data.selected_one"):
                 img_path = dataset_gallery.selected_path
                 if img_path:
                     dte_instance.delete_dataset_file(
@@ -131,7 +132,7 @@ class MoveOrDeleteFilesUI(UIBase):
                     )
                     dte_instance.construct_tag_infos()
 
-            elif target_data == "All Displayed Ones":
+            elif target_data == t("move_delete.target_data.all_displayed_ones"):
                 dte_instance.delete_dataset(
                     caption_ext, get_filters(), delete_img, delete_txt, delete_bak
                 )

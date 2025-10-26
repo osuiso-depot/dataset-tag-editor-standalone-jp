@@ -25,6 +25,7 @@ class Settings(NamedTuple):
     batch_size_convnext:int = 4
     batch_size_swinv2:int = 4
     batch_size_eva02_large:int = 4
+    ui_language: str = "en"
 
 
 DEFAULT = Settings()
@@ -54,6 +55,7 @@ DESCRIPTIONS = {
     "batch_size_convnext": "Inference batch size for ConvNeXt taggers",
     "batch_size_swinv2": "Inference batch size for SwinV2 taggers",
     "batch_size_eva02_large": "Inference batch size for EVA-02 large taggers",
+    "ui_language": "UI Language",
 }
 
 

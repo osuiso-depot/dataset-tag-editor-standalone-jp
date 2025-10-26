@@ -5,6 +5,7 @@ import gradio as gr
 import settings
 from .ui_common import *
 from .uibase import UIBase
+from scripts.ui.i18n_helper import t
 
 if TYPE_CHECKING:
     from .ui_classes import *
@@ -17,54 +18,61 @@ class LoadDatasetUI(UIBase):
             with gr.Row():
                 with gr.Column(scale=3):
                     self.tb_img_directory = gr.Textbox(
-                        label="Dataset directory",
+                        label=t("load_dataset.dataset_directory.label"),
                         placeholder="C:\\directory\\of\\datasets",
                         value=cfg_general.dataset_dir,
                     )
                 with gr.Column(scale=1, min_width=60):
                     self.tb_caption_file_ext = gr.Textbox(
-                        label="Caption File Ext",
+                        label=t("load_dataset.caption_file_ext.label"),
                         placeholder=".txt (on Load and Save)",
                         value=cfg_general.caption_ext,
                     )
                 with gr.Column(scale=1, min_width=80):
-                    self.btn_load_datasets = gr.Button(value="Load")
-                    self.btn_unload_datasets = gr.Button(value="Unload")
-            with gr.Accordion(label="Dataset Load Settings"):
+                    self.btn_load_datasets = gr.Button(value=t("load_dataset.load_button.label"))
+                    self.btn_unload_datasets = gr.Button(value=t("load_dataset.unload_button.label"))
+            with gr.Accordion(label=t("load_dataset.dataset_load_settings.label")):
                 with gr.Row():
                     with gr.Column():
                         self.cb_load_recursive = gr.Checkbox(
                             value=cfg_general.load_recursive,
-                            label="Load from subdirectories",
+                            label=t("load_dataset.load_from_subdirectories.label"),
                         )
                         self.cb_load_caption_from_filename = gr.Checkbox(
                             value=cfg_general.load_caption_from_filename,
-                            label="Load caption from filename if no text file exists",
+                            label=t("load_dataset.load_caption_from_filename.label"),
                         )
                         self.cb_replace_new_line_with_comma = gr.Checkbox(
                             value=cfg_general.replace_new_line,
-                            label="Replace new-line character with comma",
+                            label=t("load_dataset.replace_new_line_with_comma.label"),
                         )
                     with gr.Column():
                         self.rb_use_interrogator = gr.Radio(
                             choices=[
-                                "No",
-                                "If Empty",
-                                "Overwrite",
-                                "Prepend",
-                                "Append",
+                                t("load_dataset.interrogator_choices.no"),
+                                t("load_dataset.interrogator_choices.if_empty"),
+                                t("load_dataset.interrogator_choices.overwrite"),
+                                t("load_dataset.interrogator_choices.prepend"),
+                                t("load_dataset.interrogator_choices.append"),
                             ],
                             value=cfg_general.use_interrogator,
-                            label="Use Interrogator Caption",
+                            label=t("load_dataset.use_interrogator_caption.label"),
                         )
+
+                        # 設定値をフィルタリング（リストに含まれるもののみ）
+                        valid_interrogators = [
+                            name for name in (cfg_general.use_interrogator_names or [])
+                            if name in dte_instance.INTERROGATOR_NAMES
+                        ]
+
                         self.dd_intterogator_names = gr.Dropdown(
-                            label="Interrogators",
+                            label=t("load_dataset.interrogators.label"),
                             choices=dte_instance.INTERROGATOR_NAMES,
-                            value=cfg_general.use_interrogator_names,
+                            value=valid_interrogators if valid_interrogators else None,
                             interactive=True,
                             multiselect=True,
                         )
-            with gr.Accordion(label="Interrogator Settings", open=False):
+            with gr.Accordion(label=t("load_dataset.interrogator_settings.label"), open=False):
                 with gr.Row():
                     self.sl_custom_threshold_booru = gr.Slider(
                         minimum=0,
@@ -72,7 +80,7 @@ class LoadDatasetUI(UIBase):
                         value=cfg_general.custom_threshold_booru,
                         step=0.01,
                         interactive=True,
-                        label="Booru Score Threshold",
+                        label=t("load_dataset.booru_score_threshold.label"),
                     )
                 with gr.Row():
                     self.sl_custom_threshold_z3d = gr.Slider(
@@ -81,12 +89,12 @@ class LoadDatasetUI(UIBase):
                         value=cfg_general.custom_threshold_z3d,
                         step=0.01,
                         interactive=True,
-                        label="Z3D-E621 Score Threshold",
+                        label=t("load_dataset.z3d_e621_score_threshold.label"),
                     )
                 with gr.Row():
                     self.cb_use_custom_threshold_waifu = gr.Checkbox(
                         value=cfg_general.use_custom_threshold_waifu,
-                        label="Use Custom Threshold (WDv1.4 Tagger)",
+                        label=t("load_dataset.use_custom_threshold_waifu.label"),
                         interactive=True,
                     )
                     self.sl_custom_threshold_waifu = gr.Slider(
@@ -95,7 +103,7 @@ class LoadDatasetUI(UIBase):
                         value=cfg_general.custom_threshold_waifu,
                         step=0.01,
                         interactive=True,
-                        label="WDv1.4 Tagger Score Threshold",
+                        label=t("load_dataset.wdv14_tagger_score_threshold.label"),
                     )
 
     def set_callbacks(

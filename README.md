@@ -24,6 +24,7 @@ DeepBooru interrogator で生成したような、カンマ区切り形式のキ
 
 
 ## 更新履歴
+- 2025/10/26: Gradio 5.34.2対応の多言語化実装
 - 2025/10/26: Gradioをv4.28.3からv5.34.2へ更新し、起動時のTypeErrorを修正しました。
 
 ## Requirements
@@ -107,6 +108,7 @@ Google Colabユーザーは、以下のコマンドを実行し、生成され�
       - DeepDanbooru等も利用可能
     - 選択したものをデータセットから一括移動・削除したい場合は "Remove or Delete Files" タブを使用する
 1. "Save all changes" ボタンをクリックして保存する
+1. UIの言語設定を変更した場合は、設定タブの「Reload UI」ボタンをクリックしてUIを再起動してください。
 
 
 ## タグ編集の手引き

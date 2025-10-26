@@ -2,6 +2,7 @@ from typing import Callable
 import gradio as gr
 
 from .ui_common import *
+from scripts.ui.i18n_helper import t
 
 filters = dte_module.filters
 TagFilter = filters.TagFilter
@@ -48,50 +49,50 @@ class TagFilterUI:
         self.suffix = suffix
         self.regex = regex
 
-        self.tb_search_tags = gr.Textbox(label="Search Tags", interactive=True)
+        self.tb_search_tags = gr.Textbox(label=t("tag_filter.search_tags.label"), interactive=True)
         with gr.Row():
             self.cb_prefix = gr.Checkbox(
-                label="Prefix", value=self.prefix, interactive=True
+                label=t("tag_filter.prefix.label"), value=self.prefix, interactive=True
             )
             self.cb_suffix = gr.Checkbox(
-                label="Suffix", value=self.suffix, interactive=True
+                label=t("tag_filter.suffix.label"), value=self.suffix, interactive=True
             )
             self.cb_regex = gr.Checkbox(
-                label="Use regex", value=self.regex, interactive=True
+                label=t("tag_filter.use_regex.label"), value=self.regex, interactive=True
             )
         with gr.Row():
             self.rb_sort_by = gr.Radio(
                 choices=[e.value for e in SortBy],
                 value=sort_by,
                 interactive=True,
-                label="Sort by",
+                label=t("tag_filter.sort_by.label"),
             )
             self.rb_sort_order = gr.Radio(
                 choices=[e.value for e in SortOrder],
                 value=sort_order,
                 interactive=True,
-                label="Sort Order",
+                label=t("tag_filter.sort_order.label"),
             )
         v = (
-            "AND"
+            t("tag_filter.logic.and")
             if self.logic == TagFilter.Logic.AND
-            else "OR"
+            else t("tag_filter.logic.or")
             if self.logic == TagFilter.Logic.OR
-            else "NONE"
+            else t("tag_filter.logic.none")
         )
         self.rb_logic = gr.Radio(
-            choices=["AND", "OR", "NONE"],
+            choices=[t("tag_filter.logic.and"), t("tag_filter.logic.or"), t("tag_filter.logic.none")],
             value=v,
-            label="Filter Logic",
+            label=t("tag_filter.filter_logic.label"),
             interactive=True,
         )
-        
+
         with gr.Row():
-            self.btn_select_visibles = gr.Button(value="Select visible tags")
-            self.btn_deselect_visibles = gr.Button(value="Deselect visible tags")
-            
+            self.btn_select_visibles = gr.Button(value=t("tag_filter.select_visible_tags.label"))
+            self.btn_deselect_visibles = gr.Button(value=t("tag_filter.deselect_visible_tags.label"))
+
         self.cbg_tags = gr.CheckboxGroup(
-            label="Filter Images by Tags", interactive=True
+            label=t("tag_filter.filter_images_by_tags.label"), interactive=True
         )
 
     def after_filter_update(
@@ -180,7 +181,7 @@ class TagFilterUI:
         )
         self.filter = TagFilter(self.selected_tags, self.logic, self.filter_mode)
         return self.cbg_tags_update()
-    
+
     def btn_deselect_visibles_clicked(self, cbg_tags: list[str]):
         selected_tags = set(dte_instance.read_tags(cbg_tags))
         self.selected_tags -= selected_tags
@@ -220,8 +221,8 @@ class TagFilterUI:
                 suffix=self.suffix,
                 regex=self.regex,
             )
-        
-        
+
+
         tags_in_filter = set()
         if self.filter_word:
             # Show only tags with the search words for better use
@@ -230,7 +231,7 @@ class TagFilterUI:
                     tags_in_filter.add(tag)
         else:
             tags_in_filter = self.filter.tags
-        
+
         tags -= tags_in_filter
 
         tags = dte_instance.sort_tags(
@@ -241,9 +242,9 @@ class TagFilterUI:
         )
 
         tags = tags_in_filter + tags
-        
+
         self.visible_tags = set(tags)
-        
+
         tags = dte_instance.write_tags(tags, self.sort_by)
         tags_in_filter = dte_instance.write_tags(tags_in_filter, self.sort_by)
 
@@ -254,6 +255,6 @@ class TagFilterUI:
         self.filter_word = ""
         self.selected_tags = set()
         return [self.cbg_tags_update()] + [self.filter_word]
-    
+
     def clear_filter_output(self):
         return [self.cbg_tags, self.tb_search_tags]

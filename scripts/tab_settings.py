@@ -2,6 +2,7 @@ from typing import get_type_hints
 import gradio as gr
 
 import settings
+from scripts.ui.i18n_helper import SUPPORTED_LANGS, t
 
 
 setting_inputs = {}
@@ -11,28 +12,38 @@ restore_funcs = {}
 def create_components():
     global setting_inputs
     th = get_type_hints(settings.Settings)
-
     for name, ty in th.items():
+        if name == "ui_language":
+            continue
         s = getattr(settings.current, name)
-        desc = settings.DESCRIPTIONS[name]
-        if ty is int or ty is float:
-            elem = gr.Number(value=s, label=desc)
 
+        # 説明文も翻訳から取得
+        description = t(f"settings.{name}.description")
+
+        if ty is int or ty is float:
+            elem = gr.Number(
+                value=s,
+                label=t(f"settings.{name}.label"),
+                info=description  # 説明文を表示
+            )
             def restore(value):
                 return gr.Number(value=value)
-
         elif ty is bool:
-            elem = gr.Checkbox(value=s, label=desc)
-
+            elem = gr.Checkbox(
+                value=s,
+                label=t(f"settings.{name}.label"),
+                info=description
+            )
             def restore(value):
                 return gr.Checkbox(value=value)
-
         elif ty is str:
-            elem = gr.Textbox(value=s, label=desc)
-
+            elem = gr.Textbox(
+                value=s,
+                label=t(f"settings.{name}.label"),
+                info=description
+            )
             def restore(value):
                 return gr.Textbox(value=value)
-
         else:
             raise NotImplementedError()
         setting_inputs[name] = elem
@@ -41,12 +52,21 @@ def create_components():
 
 def on_ui_tabs():
     with gr.Row():
-        btn_save = gr.Button("Save Settings", variant="primary")
-        btn_restore = gr.Button("Restore Default Settings")
+        btn_save = gr.Button(t("settings.save_settings.label"), variant="primary")
+        btn_restore = gr.Button(t("settings.restore_defaults.label"))
     with gr.Column():
+        with gr.Row():
+            ui_language_radio = gr.Radio(
+                value=settings.current.ui_language,
+                choices=list(SUPPORTED_LANGS.keys()),
+                label=t("settings.ui_language.label"),
+                interactive=True
+            )
+            setting_inputs["ui_language"] = ui_language_radio
+            restore_funcs["ui_language"] = lambda value: gr.Radio(value=value)
         create_components()
-    
-    btn_reload = gr.Button("Reload UI", variant="primary", elem_id="reload_ui")
+
+    btn_reload = gr.Button(t("settings.reload_ui.label"), variant="primary", elem_id="reload_ui")
 
     def request_restart():
         from shared_state import state
@@ -60,19 +80,21 @@ def on_ui_tabs():
     )
 
     def btn_save_clicked(inputs: dict):
-        settings.current = settings.Settings(
-            **{
-                name: type(getattr(settings.current, name))(
+        new_settings_dict = {}
+        for name in settings.NAMES:
+            if name == "ui_language":
+                new_settings_dict[name] = inputs[ui_language_radio]
+            else:
+                new_settings_dict[name] = type(getattr(settings.current, name))(
                     inputs[setting_inputs[name]]
                 )
-                for name in settings.NAMES
-            }
-        )
+        settings.current = settings.Settings(**new_settings_dict)
         settings.save()
 
     btn_save.click(
         fn=btn_save_clicked,
         inputs={setting_inputs[name] for name in settings.NAMES},
+        outputs=[] # outputsを追加
     )
 
     def btn_restore_clicked():

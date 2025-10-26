@@ -18,6 +18,7 @@ from dte_instance import dte_instance
 import tab_main, tab_settings, cmd_args, utilities, logger, launch, settings
 import paths
 from shared_state import state
+from scripts.ui.i18n_helper import build_i18n, set_translator, t
 
 
 # ================================================================
@@ -55,7 +56,7 @@ def save_pil_to_cache(pil_image: Image.Image, *args, **kwargs):
     if already_saved_as and os.path.isfile(already_saved_as):
         register_tmp_file(interface, already_saved_as)
         return str(Path(already_saved_as).resolve())
-    
+
     tmpdir = state.temp_dir
     use_metadata = False
     metadata = PngImagePlugin.PngInfo()
@@ -73,7 +74,7 @@ def save_pil_to_cache(pil_image: Image.Image, *args, **kwargs):
     pil_image.save(file_obj, pnginfo=(metadata if use_metadata else None))
 
     pil_image.already_saved_as = file_obj.name
-    
+
     return file_obj.name
 
 
@@ -88,7 +89,7 @@ def save_file_to_cache_cacheonce(file_path: str | Path, cache_dir: str) -> str:
     filename = hashlib.md5(file_path.encode()).hexdigest()
     temp_dir = Path(cache_dir)
     temp_dir.mkdir(exist_ok=True, parents=True)
-    
+
     from gradio_client import utils as client_utils
     import shutil
 
@@ -180,14 +181,16 @@ commit: <a href="https://github.com/toshiaki1729/dataset-tag-editor-standalone/c
 def create_ui():
     reload_javascript()
 
-    with gr.Blocks(analytics_enabled=False, title="Dataset Tag Editor") as gui:
-        with gr.Tab("Main"):
+    # I18nインスタンスを取得
+    # i18n_instance = build_i18n(settings.current.ui_language)
+
+    # BlocksにI18nを渡す
+    with gr.Blocks(analytics_enabled=False, title=t("app.title")) as gui:
+        with gr.Tab(t("app.main_tab.label")):
             tab_main.on_ui_tabs()
-        with gr.Tab("Settings"):
+        with gr.Tab(t("app.settings_tab.label")):
             tab_settings.on_ui_tabs()
-
         gr.Textbox(elem_id="ui_created", value="", visible=False)
-
         footer = f'<div class="versions">{versions_html()}</div>'
         gr.HTML(footer, elem_id="footer")
     return gui
@@ -220,16 +223,19 @@ def main():
 
     while True:
         state.begin()
-        
+
         settings.load()
         paths.paths = paths.Paths()
+
+        i18n_instance = build_i18n(lang=settings.current.ui_language)
+        set_translator(i18n_instance)
 
         state.temp_dir = (utilities.base_dir_path() / "temp").absolute()
         if settings.current.use_temp_files and settings.current.temp_directory != "":
             state.temp_dir = Path(settings.current.temp_directory)
-        
+
         os.environ['GRADIO_TEMP_DIR'] = state.temp_dir.name
-        
+
         # override save function to prevent from making anonying temporaly files
         gr.gradio.processing_utils.save_pil_to_cache = save_pil_to_cache
 
@@ -258,7 +264,8 @@ def main():
             ssl_certfile=cmd_args.opts.tls_cert,
             debug=cmd_args.opts.gradio_debug,
             prevent_thread_lock=True,
-            allowed_paths=allowed_paths
+            allowed_paths=allowed_paths,
+            i18n=i18n_instance
         )
 
         # Disable a very open middleware as Stable Diffusion web UI does
