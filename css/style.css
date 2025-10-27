@@ -183,6 +183,7 @@ button.custom-button{
 .token-counter{
     position: absolute;
     display: inline-block;
+    overflow: visible !important;
     right: 2em;
     min-width: 0 !important;
     width: auto;

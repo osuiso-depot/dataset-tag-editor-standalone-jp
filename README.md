@@ -11,8 +11,6 @@
 
 # Dataset Tag Editor Standalone
 
-[English Readme](README.md)
-
 web UI 上で学習用データセットのキャプションを編集できるようにします。
 こちらは、[Dataset Tag Editor](https://github.com/toshiaki1729/stable-diffusion-webui-dataset-tag-editor)のスタンドアロン版です（元のプログラムは[Stable Diffusion web UI by AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui)用の拡張機能です）。
 
@@ -35,6 +33,8 @@ DeepBooru interrogator で生成したような、カンマ区切り形式のキ
 
 
 ## 更新履歴
+- 2025/10/27: Gradio UIのカスタムCSS適用方法を改善し、UI調整を容易にしました。
+- 2025/10/27: 「選択された画像をInterrogate」セクションをアコーディオン化し、UIを改善しました。
 - 2025/10/26: Gradio 5.34.2対応の多言語化実装
 - 2025/10/26: Gradioをv4.28.3からv5.34.2へ更新し、起動時のTypeErrorを修正しました。
 

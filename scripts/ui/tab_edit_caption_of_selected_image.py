@@ -47,7 +47,7 @@ class EditCaptionOfSelectedImageUI(UIBase):
                 self.btn_prepend_caption = gr.Button(value=t("edit_caption.prepend.label"))
                 self.btn_append_caption = gr.Button(value=t("edit_caption.append.label"))
 
-            with gr.Tab(label=t("edit_caption.interrogate_tab.label")):
+            with gr.Accordion(label=t("edit_caption.interrogate_tab.label"), open=False):
                 with gr.Row():
                     # 設定値がchoicesに含まれるかチェック
                     interrogator_value = (
@@ -64,20 +64,20 @@ class EditCaptionOfSelectedImageUI(UIBase):
                         multiselect=False,
                     )
                     self.btn_interrogate_si = gr.Button(value=t("edit_caption.interrogate_button.label"))
-            with gr.Column():
-                self.tb_interrogate = gr.Textbox(
-                    label=t("edit_caption.interrogate_result.label"),
-                    interactive=True,
-                    lines=6,
-                    elem_id="dte_interrogate",
-                )
-                self.token_counter_interrogate = gr.HTML(
-                    value="<span>0/75</span>", elem_id="dte_interrogate_counter", elem_classes=["token-counter"]
-                )
-            with gr.Row():
-                self.btn_copy_interrogate = gr.Button(value=t("edit_caption.copy_and_overwrite.label"))
-                self.btn_prepend_interrogate = gr.Button(value=t("edit_caption.prepend.label"))
-                self.btn_append_interrogate = gr.Button(value=t("edit_caption.append.label"))
+                with gr.Column():
+                    self.tb_interrogate = gr.Textbox(
+                        label=t("edit_caption.interrogate_result.label"),
+                        interactive=True,
+                        lines=6,
+                        elem_id="dte_interrogate",
+                    )
+                    self.token_counter_interrogate = gr.HTML(
+                        value="<span>0/75</span>", elem_id="dte_interrogate_counter", elem_classes=["token-counter"]
+                    )
+                with gr.Row():
+                    self.btn_copy_interrogate = gr.Button(value=t("edit_caption.copy_and_overwrite.label"))
+                    self.btn_prepend_interrogate = gr.Button(value=t("edit_caption.prepend.label"))
+                    self.btn_append_interrogate = gr.Button(value=t("edit_caption.append.label"))
         with gr.Column():
             self.cb_copy_caption_automatically = gr.Checkbox(
                 value=cfg_edit_selected.auto_copy,
