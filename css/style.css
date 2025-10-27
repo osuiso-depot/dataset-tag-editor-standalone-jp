@@ -2,13 +2,15 @@
 /* general gradio fixes */
 
 :root, .dark{
-    --checkbox-label-gap: 0.25em 0.1em;
+    /* --checkbox-label-gap: 0.25em 0.1em; */
+    --checkbox-label-gap: 2px 2px 2px 2px;
+    --checkbox-label-padding: 5px 0.75rem 5px 0.75rem;
     --section-header-text-size: 12pt;
     --block-background-fill: transparent;
 }
 
 .block.padded:not(.gradio-accordion) {
-    padding: 0 !important;
+    padding: 7px !important;
 }
 
 div.gradio-container{
@@ -21,7 +23,7 @@ div.gradio-container{
 
 .compact{
     background: transparent !important;
-    padding: 0 !important;
+    padding: 5px !important;
 }
 
 div.form{
@@ -209,5 +211,5 @@ button.custom-button{
 
 /* Adjust checkbox label padding within CheckboxGroup */
 [data-testid="checkbox-group"] > label {
-    padding: 0 0 0 0;
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem !important;
 }

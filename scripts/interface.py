@@ -130,14 +130,26 @@ def css_html():
     return head
 
 
+def read_custom_css():
+    css_path = utilities.base_dir_path() / "css"
+    css_content = ""
+
+    for p in sorted(css_path.glob("*.css")):
+        if not p.is_file():
+            continue
+        with open(p, "r", encoding="utf8") as f:
+            css_content += f.read() + "\n"
+    return css_content
+
+
 def reload_javascript():
     js = javascript_html()
-    css = css_html()
+    # css = css_html() # css_html()はHTMLのlinkタグを返すので、ここでは使用しない
 
     def template_response(*args, **kwargs):
         res = GradioTemplateResponseOriginal(*args, **kwargs)
         res.body = res.body.replace(b"</head>", f"{js}</head>".encode("utf8"))
-        res.body = res.body.replace(b"</body>", f"{css}</body>".encode("utf8"))
+        res.body = res.body.replace(b"</body>", f"</body>".encode("utf8")) # CSS挿入を削除
         res.init_headers()
         return res
 
@@ -185,7 +197,7 @@ def create_ui():
     # i18n_instance = build_i18n(settings.current.ui_language)
 
     # BlocksにI18nを渡す
-    with gr.Blocks(analytics_enabled=False, title=t("app.title")) as gui:
+    with gr.Blocks(analytics_enabled=False, title=t("app.title"), css=read_custom_css()) as gui:
         with gr.Tab(t("app.main_tab.label")):
             tab_main.on_ui_tabs()
         with gr.Tab(t("app.settings_tab.label")):
