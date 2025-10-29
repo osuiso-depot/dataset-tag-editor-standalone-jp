@@ -14,6 +14,8 @@
   "settings.save_settings.label": "Save Settings",
   "settings.restore_defaults.label": "Restore Default Settings",
   "settings.reload_ui.label": "Reload UI",
+  "settings.save_settings.success_message": "Settings saved successfully!",
+  "settings.restore_defaults.success_message": "Settings restored to default!",
   "settings.allowed_paths.label": "Allowed Paths",
   "settings.allowed_paths.description": "Path whitelist to show images in gallery (for local use). Split paths by comma and space (, )",
   "settings.use_temp_files.label": "Use Temporary Files",

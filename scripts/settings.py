@@ -6,7 +6,7 @@ SETTING_PATH = base_dir_path() / "settings.json"
 
 class Settings(NamedTuple):
     allowed_paths: str = ''
-    use_temp_files: bool = False
+    use_temp_files: bool = True
     temp_directory: str = ''
     cleanup_tmpdir: bool = True
     image_columns: int = 6

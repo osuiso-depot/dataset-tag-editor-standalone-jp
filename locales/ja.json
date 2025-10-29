@@ -14,6 +14,8 @@
   "settings.save_settings.label": "設定を保存",
   "settings.restore_defaults.label": "デフォルト設定に戻す",
   "settings.reload_ui.label": "UIを再読み込み",
+  "settings.save_settings.success_message": "設定を保存しました！",
+  "settings.restore_defaults.success_message": "設定をデフォルトに戻しました！",
   "settings.allowed_paths.label": "許可されたパス",
   "settings.allowed_paths.description": "ギャラリーに画像を表示するためのパスホワイトリスト（ローカル使用向け）。カンマとスペース (, ) でパスを区切ります",
   "settings.use_temp_files.label": "一時ファイルを使用",

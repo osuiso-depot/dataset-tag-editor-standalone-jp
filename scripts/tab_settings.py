@@ -77,6 +77,7 @@ def on_ui_tabs():
         fn=request_restart,
         inputs=[],
         outputs=[],
+        _js="() => { window.location.reload(); }"
     )
 
     def btn_save_clicked(inputs: dict):
@@ -90,6 +91,7 @@ def on_ui_tabs():
                 )
         settings.current = settings.Settings(**new_settings_dict)
         settings.save()
+        gr.Info(t("settings.save_settings.success_message"))
 
     btn_save.click(
         fn=btn_save_clicked,
@@ -99,6 +101,7 @@ def on_ui_tabs():
 
     def btn_restore_clicked():
         settings.restore_defaults()
+        gr.Info(t("settings.restore_defaults.success_message"))
         return {
             setting_inputs[name]: restore_funcs[name](getattr(settings.current, name))
             for name in settings.NAMES
