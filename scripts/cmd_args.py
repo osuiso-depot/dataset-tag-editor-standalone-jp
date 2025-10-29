@@ -30,6 +30,12 @@ parser.add_argument(
     default=False,
 )
 parser.add_argument(
+    "--inbrowser",
+    action="store_true",
+    help="Launch gradio with inbrowser=True option and open in browser",
+    default=False,
+)
+parser.add_argument(
     "--server-name", type=str, help="Host name of gradio server", default=None
 )
 parser.add_argument(

@@ -278,7 +278,8 @@ def main():
             debug=cmd_args.opts.gradio_debug,
             prevent_thread_lock=True,
             allowed_paths=allowed_paths,
-            i18n=i18n_instance
+            i18n=i18n_instance,
+            inbrowser=cmd_args.opts.inbrowser
         )
 
         # Disable a very open middleware as Stable Diffusion web UI does
