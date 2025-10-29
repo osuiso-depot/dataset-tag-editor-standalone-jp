@@ -10,6 +10,8 @@
     * add `gr.CheckboxGroup(elem_classes=["my-checkbox-group"])`
 * [x] 「Edit Caption of Selected Image」」→「選択された画像をInterrogate」をアコーディオンで閉じれるようにしたい
 * [ ] 現在の表示タブ(gradio内の表示タブ)を覚える。リロード時も表示タブが変化しない
+  * [ ] maintabにidを追加。jsによるタブ復元ロジックが動作しないバグの修正
+* [x] 編集保存ボタン押下で、`AttributeError: Cannot call change outside of a gradio.Blocks context.`エラーの修正。→メイン状態保存ロジックが原因。該当コードを破棄し、実装計画を再構築する。
 
 # メイン
 * [ ] 「メイン」タブ内のディレクトリの読み込みなどによって、表示が変化しないチェックボックス／ラジオボタンの状態を保存する。
