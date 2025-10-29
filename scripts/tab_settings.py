@@ -77,7 +77,9 @@ def on_ui_tabs():
         fn=request_restart,
         inputs=[],
         outputs=[],
-        _js="() => { window.location.reload(); }"
+    ).then(
+        None,
+        js="() => { setTimeout(() => { window.location.reload(); }, 1000); }"
     )
 
     def btn_save_clicked(inputs: dict):

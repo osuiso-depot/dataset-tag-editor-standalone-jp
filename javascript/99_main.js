@@ -52,6 +52,28 @@ document.addEventListener("DOMContentLoaded", function () {
         changeTokenCounterPos('dte_caption', 'dte_caption_counter')
         changeTokenCounterPos('dte_edit_caption', 'dte_edit_caption_counter')
         changeTokenCounterPos('dte_interrogate', 'dte_interrogate_counter')
+
+        // タブの状態保存・復元ロジック
+        const mainTabs = gradioApp().getElementById('main_tabs');
+        if (mainTabs) {
+            // タブが変更されたときに選択されたタブを保存
+            mainTabs.addEventListener('change', function() {
+                const selectedTab = mainTabs.querySelector('.gradio-tabs > button.selected');
+                if (selectedTab) {
+                    const tabIndex = Array.from(mainTabs.querySelectorAll('.gradio-tabs > button')).indexOf(selectedTab);
+                    localStorage.setItem('gradio_selected_tab', tabIndex);
+                }
+            });
+
+            // ページロード時に保存されたタブを復元
+            const savedTabIndex = localStorage.getItem('gradio_selected_tab');
+            if (savedTabIndex !== null) {
+                const tabButtons = mainTabs.querySelectorAll('.gradio-tabs > button');
+                if (tabButtons[savedTabIndex]) {
+                    tabButtons[savedTabIndex].click();
+                }
+            }
+        }
     });
 
     o.observe(gradioApp(), { childList: true, subtree: true })

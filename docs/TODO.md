@@ -1,5 +1,5 @@
-* [ ] 「Force using temporary file to show images on gallery」オプションをデフォルトでONにする。
-  * [ ] はgradioが自身の配下外のフォルダを扱えるように、gradioのキャッシュフォルダに画像をキャッシュするオプションだと推測。OFFだと、画像を読み込めないエラーが出ることがあるので、ユーザーが混乱する。デフォルトでONが良さそう。
+* [x] 「Force using temporary file to show images on gallery」オプションをデフォルトでONにする。
+  * [x] はgradioが自身の配下外のフォルダを扱えるように、gradioのキャッシュフォルダに画像をキャッシュするオプションだと推測。OFFだと、画像を読み込めないエラーが出ることがあるので、ユーザーが混乱する。デフォルトでONが良さそう。
 * [x] 「Filter Images by Tags」で多数のタグが表示される場合、スクロールバーが長くなり、一覧性が悪化する。paddingなどを修正して対策したい。
 * [x] 「/* Adjust checkbox label padding within CheckboxGroup */
 [data-testid="checkbox-group"] > label {
@@ -29,6 +29,6 @@
       * [ ] `Use Custom Threshold (WDv1.4 Tagger)`
       * [ ] `WDv1.4 Tagger Score Threshold`
 # 設定
-* [ ] 「UIを再読み込み」ボタン押下でブラウザの自動リロードを行う
-* [ ] 「設定を保存」「デフォルトの設定に戻す」ボタン押下で、操作が行われたことを通知(alertやpopup windowなどで)を表示
-    * [ ]  ユーザーの操作を阻害しない形で、伝える実装にする
+* [x] 「UIを再読み込み」ボタン押下でブラウザの自動リロードを行う
+* [x] 「設定を保存」「デフォルトの設定に戻す」ボタン押下で、操作が行われたことを通知(alertやpopup windowなどで)を表示
+    * [x]  ユーザーの操作を阻害しない形で、伝える実装にする

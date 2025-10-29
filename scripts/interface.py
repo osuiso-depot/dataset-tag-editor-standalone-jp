@@ -197,7 +197,7 @@ def create_ui():
     # i18n_instance = build_i18n(settings.current.ui_language)
 
     # BlocksにI18nを渡す
-    with gr.Blocks(analytics_enabled=False, title=t("app.title"), css=read_custom_css()) as gui:
+    with gr.Blocks(analytics_enabled=False, title=t("app.title"), css=read_custom_css(), elem_id="main_tabs") as gui:
         with gr.Tab(t("app.main_tab.label")):
             tab_main.on_ui_tabs()
         with gr.Tab(t("app.settings_tab.label")):
@@ -261,6 +261,7 @@ def main():
 
         dte_instance.load_interrogators()
 
+        logger.write(f"Gradio version: {gr.__version__}")
         interface = create_ui().queue(64)
 
         allowed_paths = settings.current.allowed_paths.split(', ')
