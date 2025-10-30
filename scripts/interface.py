@@ -103,20 +103,32 @@ def save_file_to_cache_cacheonce(file_path: str | Path, cache_dir: str) -> str:
 
 
 def webpath(fn: Path):
-    path = str(fn.absolute()).replace("\\", "/")
-    return f"file={path}?{os.path.getmtime(fn)}"
-
+    # path = str(fn.absolute()).replace("\\", "/")
+    path = fn.absolute().as_posix()  # より安全な方法
+    # return f"/file={path}?{os.path.getmtime(fn)}"
+    return f"/file={path}"
 
 def javascript_html():
     js_path = utilities.base_dir_path() / "javascript"
     head = ""
+
     for p in sorted(js_path.glob("*.js")):
         if not p.is_file():
             continue
-        head += f'<script type="text/javascript" src="{webpath(p)}"></script>\n'
+
+        # 相対パスに変換
+        rel_path = p.relative_to(utilities.base_dir_path()).as_posix()
+
+        # タイムスタンプをハッシュフラグメントとして追加
+        timestamp = int(os.path.getmtime(p))
+
+        # Gradio用ファイルURL生成
+        gradio_file_url = f"/gradio_api/file={rel_path}#{timestamp}"
+
+        # ファイル埋込
+        head += f'<script type="text/javascript" src="{gradio_file_url}"></script>\n'
 
     return head
-
 
 def css_html():
     css_path = utilities.base_dir_path() / "css"
@@ -265,7 +277,10 @@ def main():
         interface = create_ui().queue(64)
 
         allowed_paths = settings.current.allowed_paths.split(', ')
-        allowed_paths = [str(Path(path).absolute()) for path in allowed_paths] + [utilities.base_dir_path()]
+        allowed_paths = [str(Path(path).absolute()) for path in allowed_paths] + [str(utilities.base_dir_path())]
+
+        print(f"[DEBUG] Allowed paths: {allowed_paths}")
+
         app, _, _ = interface.launch(
             server_port=cmd_args.opts.port,
             server_name=cmd_args.opts.server_name,
