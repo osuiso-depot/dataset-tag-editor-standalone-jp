@@ -13,6 +13,7 @@
   * [ ] maintabにidを追加。jsによるタブ復元ロジックが動作しないバグの修正
 * [x] 編集保存ボタン押下で、`AttributeError: Cannot call change outside of a gradio.Blocks context.`エラーの修正。→メイン状態保存ロジックが原因。該当コードを破棄し、実装計画を再構築する。
 * [ ] UIの調整
+* [ ] 「Token indices sequence length is longer than the specified maximum sequence length for this model (117 > 77). Running this sequence through the model will result in indexing errors」のログメッセージの調査。
 
 # メイン
 * [ ] 「メイン」タブ内のディレクトリの読み込みなどによって、表示が変化しないチェックボックス／ラジオボタンの状態を保存する。

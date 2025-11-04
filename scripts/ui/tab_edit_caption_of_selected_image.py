@@ -4,6 +4,7 @@ import gradio as gr
 
 from dte_instance import dte_module
 from utilities import wrap_queued_call
+import cmd_args
 
 from .ui_common import *
 from .uibase import UIBase
@@ -60,14 +61,14 @@ class EditCaptionOfSelectedImageUI(UIBase):
                         label=t("edit_caption.interrogator.label"),
                         choices=dte_instance.INTERROGATOR_NAMES,
                         value=interrogator_value,
-                        interactive=True,
+                        interactive=not cmd_args.opts.cpu_only,
                         multiselect=False,
                     )
-                    self.btn_interrogate_si = gr.Button(value=t("edit_caption.interrogate_button.label"))
+                    self.btn_interrogate_si = gr.Button(value=t("edit_caption.interrogate_button.label"), interactive=not cmd_args.opts.cpu_only)
                 with gr.Column():
                     self.tb_interrogate = gr.Textbox(
                         label=t("edit_caption.interrogate_result.label"),
-                        interactive=True,
+                        interactive=not cmd_args.opts.cpu_only,
                         lines=6,
                         elem_id="dte_interrogate",
                     )
@@ -75,9 +76,9 @@ class EditCaptionOfSelectedImageUI(UIBase):
                         value="<span>0/75</span>", elem_id="dte_interrogate_counter", elem_classes=["token-counter"]
                     )
                 with gr.Row():
-                    self.btn_copy_interrogate = gr.Button(value=t("edit_caption.copy_and_overwrite.label"))
-                    self.btn_prepend_interrogate = gr.Button(value=t("edit_caption.prepend.label"))
-                    self.btn_append_interrogate = gr.Button(value=t("edit_caption.append.label"))
+                    self.btn_copy_interrogate = gr.Button(value=t("edit_caption.copy_and_overwrite.label"), interactive=not cmd_args.opts.cpu_only)
+                    self.btn_prepend_interrogate = gr.Button(value=t("edit_caption.prepend.label"), interactive=not cmd_args.opts.cpu_only)
+                    self.btn_append_interrogate = gr.Button(value=t("edit_caption.append.label"), interactive=not cmd_args.opts.cpu_only)
         with gr.Column():
             self.cb_copy_caption_automatically = gr.Checkbox(
                 value=cfg_edit_selected.auto_copy,

@@ -58,7 +58,9 @@ class LoadDatasetUI(UIBase):
 
                         # 設定値がchoicesに存在しない場合のフォールバック
                         initial_interrogator_value = cfg_general.use_interrogator
-                        if initial_interrogator_value not in [choice for choice in interrogator_choices]:
+                        if cmd_args.opts.cpu_only:
+                            initial_interrogator_value = "No" # CPU OnlyモードではInterrogatorを強制的に無効化
+                        elif initial_interrogator_value not in [choice for choice in interrogator_choices]:
                             initial_interrogator_value = "No" # デフォルト値
 
                         self.rb_use_interrogator = gr.Radio(
