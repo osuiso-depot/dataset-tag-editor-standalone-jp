@@ -60,4 +60,10 @@ parser.add_argument(
     help="Launch with simple and partial performance profiler (show elapsed time on loading dataset)",
     default=False,
 )
+parser.add_argument(
+    "--cpu-only",
+    action="store_true",
+    help="Launch with CPU only (skip GPU detection and usage)",
+    default=False,
+)
 opts = parser.parse_args()

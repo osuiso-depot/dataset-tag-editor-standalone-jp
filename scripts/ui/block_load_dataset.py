@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Callable
 import gradio as gr
 
 import settings
+import cmd_args
 from .ui_common import *
 from .uibase import UIBase
 from scripts.ui.i18n_helper import t
@@ -64,6 +65,7 @@ class LoadDatasetUI(UIBase):
                             choices=interrogator_choices,
                             value=initial_interrogator_value,
                             label=t("load_dataset.use_interrogator_caption.label"),
+                            interactive=not cmd_args.opts.cpu_only,
                         )
 
                         # 設定値をフィルタリング（リストに含まれるもののみ）
@@ -76,7 +78,7 @@ class LoadDatasetUI(UIBase):
                             label=t("load_dataset.interrogators.label"),
                             choices=dte_instance.INTERROGATOR_NAMES,
                             value=valid_interrogators if valid_interrogators else None,
-                            interactive=True,
+                            interactive=not cmd_args.opts.cpu_only,
                             multiselect=True,
                         )
             with gr.Accordion(label=t("load_dataset.interrogator_settings.label"), open=False):
@@ -86,7 +88,7 @@ class LoadDatasetUI(UIBase):
                         maximum=1,
                         value=cfg_general.custom_threshold_booru,
                         step=0.01,
-                        interactive=True,
+                        interactive=not cmd_args.opts.cpu_only,
                         label=t("load_dataset.booru_score_threshold.label"),
                     )
                 with gr.Row():
@@ -95,21 +97,21 @@ class LoadDatasetUI(UIBase):
                         maximum=1,
                         value=cfg_general.custom_threshold_z3d,
                         step=0.01,
-                        interactive=True,
+                        interactive=not cmd_args.opts.cpu_only,
                         label=t("load_dataset.z3d_e621_score_threshold.label"),
                     )
                 with gr.Row():
                     self.cb_use_custom_threshold_waifu = gr.Checkbox(
                         value=cfg_general.use_custom_threshold_waifu,
                         label=t("load_dataset.use_custom_threshold_waifu.label"),
-                        interactive=True,
+                        interactive=not cmd_args.opts.cpu_only,
                     )
                     self.sl_custom_threshold_waifu = gr.Slider(
                         minimum=0,
                         maximum=1,
                         value=cfg_general.custom_threshold_waifu,
                         step=0.01,
-                        interactive=True,
+                        interactive=not cmd_args.opts.cpu_only,
                         label=t("load_dataset.wdv14_tagger_score_threshold.label"),
                     )
 

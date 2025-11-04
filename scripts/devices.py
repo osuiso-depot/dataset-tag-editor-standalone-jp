@@ -13,7 +13,7 @@ def check_for_mps() -> bool:
         return torch.backends.mps.is_available()
     elif not getattr(torch, "has_mps", False):
         return False
-    
+
     try:
         torch.zeros(1).to(torch.device("mps"))
         return True
@@ -48,6 +48,9 @@ def get_cuda_device():
 
 
 def get_optimal_device():
+    if cmd_args.opts.cpu_only:
+        return torch.device("cpu")
+
     if torch.cuda.is_available():
         return get_cuda_device()
 

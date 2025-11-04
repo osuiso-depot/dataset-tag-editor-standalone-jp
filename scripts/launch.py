@@ -67,6 +67,9 @@ stderr: {result.stderr.decode(encoding="utf8", errors="ignore") if len(result.st
 
 
 def prepare_environment():
+    if cmd_args.opts.cpu_only:
+        cmd_args.opts.force_install_torch = "cpu"
+
     if cmd_args.opts.force_install_torch is None:
         pass
     elif cmd_args.opts.force_install_torch == "cpu":
@@ -78,7 +81,7 @@ def prepare_environment():
         or not is_installed("torchvision")
         or cmd_args.opts.force_install_torch is not None
     ):
-        run(f'"{python}" -m {torch_command}')
+        run_pip(torch_command.replace("pip ", ""), "torch and torchvision")
     check_python_version()
 
     import devices
