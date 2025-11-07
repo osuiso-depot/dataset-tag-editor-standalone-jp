@@ -51,7 +51,7 @@ def load_image(img_path: Path, max_res: float, use_temp_dir: bool):
 
 def load_image_wrapper(args):
     return load_image(*args)
-     
+
 
 class DatasetTagEditor(Singleton):
     class SortBy(Enum):
@@ -70,7 +70,7 @@ class DatasetTagEditor(Singleton):
         OVERWRITE = 2
         PREPEND = 3
         APPEND = 4
-    
+
     def __init__(self):
         # from modules.textual_inversion.dataset
         self.re_word = (
@@ -85,7 +85,7 @@ class DatasetTagEditor(Singleton):
         self.images = {}
         self.tag_tokens = {}
         self.raw_clip_token_used = None
-        
+
     def load_interrogators(self):
         custom_tagger_scripts = CustomScripts(paths.userscript_path / "taggers")
         custom_taggers:list[Tagger] = custom_tagger_scripts.load_derived_classes(Tagger)
@@ -120,7 +120,7 @@ class DatasetTagEditor(Singleton):
             + [cls_tagger() for cls_tagger in custom_taggers]
         )
         self.INTERROGATOR_NAMES = [it.name() for it in self.INTERROGATORS]
-    
+
     def interrogate_image(self, path: str, interrogator_name: str, threshold_booru, threshold_wd, threshold_z3d):
         try:
             img = Image.open(path)
@@ -685,7 +685,7 @@ class DatasetTagEditor(Singleton):
         threshold_waifu: float,
         threshold_z3d: float,
         use_temp_dir: bool,
-        kohya_json_path: Optional[str], 
+        kohya_json_path: Optional[str],
         max_res:float
     ):
         import time
@@ -695,7 +695,7 @@ class DatasetTagEditor(Singleton):
         def timestamp(epoch:int, text:str):
             elapsed = time.time_ns() - epoch
             logger.profile(f"{text} : {elapsed/1000000:.3f} [ms]")
-        
+
         self.clear()
 
         img_dir_obj = Path(img_dir)
@@ -706,21 +706,23 @@ class DatasetTagEditor(Singleton):
 
         try:
             filepaths = img_dir_obj.rglob("*") if recursive else img_dir_obj.glob("*")
-            filepaths = [p for p in filepaths if p.is_file()]
-            estimated_image_num = len([p for p in filepaths if p.suffix.lower() in Image.registered_extensions()])
+            # 画像ファイルのみをフィルタリング
+            image_extensions = Image.registered_extensions()
+            filepaths = [p for p in filepaths if p.is_file() and p.suffix.lower() in image_extensions]
+            estimated_image_num = len(filepaths) # フィルタリング後のファイル数を使用
         except Exception as e:
             logger.error(f"Cannot load dataset from directory: {img_dir}")
             logger.error(e)
             logger.write("Loading Aborted.")
             self.clear()
             return
-        
+
         self.dataset_dir = img_dir
-        
+
         if opts.profile:
             timestamp(epoch_ns, "List files to read")
             epoch_ns = time.time_ns()
-        
+
         pool_size = settings.current.num_cpu_worker
         if pool_size < 0:
             import os, math
@@ -751,10 +753,10 @@ class DatasetTagEditor(Singleton):
                 if not use_temp_dir and max_res <= 0:
                     img.already_saved_as = img_path
                 images_raw[img_path] = img
-            
+
             logger.write(f"Total {len(imgpaths)} valid images")
             return imgpaths, images_raw
-        
+
         def load_thumbnails(images_raw: dict[str, Image.Image]):
             images = {}
             if max_res > 0:
@@ -797,7 +799,7 @@ class DatasetTagEditor(Singleton):
                 taglists.append(caption_tags)
 
             return taglists
-        
+
         tagger_thresholds:list[tuple[Tagger, float]] = []
         if interrogate_method != self.InterrogateMethod.NONE:
             for it in self.INTERROGATORS:
@@ -825,15 +827,15 @@ class DatasetTagEditor(Singleton):
             logger.write("Loading Aborted.")
             self.clear()
             return
-        
+
         if opts.profile:
             timestamp(epoch_ns, "Load dataset and convert images")
             epoch_ns = time.time_ns()
-        
+
         interrogate_tags = {img_path : [] for img_path in imgpaths}
-        
+
         img_to_interrogate = [
-        img_path for i, img_path in enumerate(imgpaths) 
+        img_path for i, img_path in enumerate(imgpaths)
             if (not taglists[i] or interrogate_method != self.InterrogateMethod.PREFILL)
         ]
 
@@ -854,7 +856,7 @@ class DatasetTagEditor(Singleton):
             if opts.profile:
                 timestamp(epoch_ns, "Preprocess images for interrogating")
                 epoch_ns = time.time_ns()
-            
+
             logger.write("Interrogating images...")
             for tg, th in tqdm(tagger_thresholds):
                 use_pipe = True
@@ -880,11 +882,11 @@ class DatasetTagEditor(Singleton):
                     logger.error(e)
                 finally:
                     tg.stop()
-        
+
         if opts.profile:
             timestamp(epoch_ns, "Interrogate images")
             epoch_ns = time.time_ns()
-        
+
         for img_path, tags in zip(imgpaths, taglists):
             if (interrogate_method == self.InterrogateMethod.PREFILL and not tags) or (interrogate_method == self.InterrogateMethod.OVERWRITE):
                 tags = interrogate_tags[img_path]
@@ -897,16 +899,16 @@ class DatasetTagEditor(Singleton):
 
         for i, path in enumerate(sorted(self.dataset.datas.keys())):
             self.img_idx[path] = i
-        
+
         if opts.profile:
             timestamp(epoch_ns, "Store image tags")
             epoch_ns = time.time_ns()
 
         self.construct_tag_infos()
-        
+
         if opts.profile:
             timestamp(epoch_ns, "Analyze image tags")
-        
+
         logger.write(f"Loading Completed: {len(self.dataset)} images found")
         if opts.profile:
             timestamp(start_ns, "Total elapsed time")
