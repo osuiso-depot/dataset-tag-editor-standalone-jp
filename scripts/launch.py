@@ -69,19 +69,19 @@ stderr: {result.stderr.decode(encoding="utf8", errors="ignore") if len(result.st
 def prepare_environment():
     if cmd_args.opts.cpu_only:
         cmd_args.opts.force_install_torch = "cpu"
-
-    if cmd_args.opts.force_install_torch is None:
-        pass
-    elif cmd_args.opts.force_install_torch == "cpu":
-        torch_command = "pip install -U torch torchvision"
     else:
-        torch_command = f"pip install -U torch torchvision --index-url https://download.pytorch.org/whl/{cmd_args.opts.force_install_torch}"
-    if (
-        not is_installed("torch")
-        or not is_installed("torchvision")
-        or cmd_args.opts.force_install_torch is not None
-    ):
-        run_pip(torch_command.replace("pip ", ""), "torch and torchvision")
+        if cmd_args.opts.force_install_torch is None:
+            pass
+        elif cmd_args.opts.force_install_torch == "cpu":
+            torch_command = "pip install -U torch torchvision"
+        else:
+            torch_command = f"pip install -U torch torchvision --index-url https://download.pytorch.org/whl/{cmd_args.opts.force_install_torch}"
+        if (
+            not is_installed("torch")
+            or not is_installed("torchvision")
+            or cmd_args.opts.force_install_torch is not None
+        ):
+            run_pip(torch_command.replace("pip ", ""), "torch and torchvision")
     check_python_version()
 
     import devices

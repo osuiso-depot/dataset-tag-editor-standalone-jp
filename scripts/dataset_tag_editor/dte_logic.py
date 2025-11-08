@@ -10,6 +10,7 @@ import traceback
 from multiprocessing import Pool
 
 from tqdm import tqdm
+import time # 時間計測のためにtimeモジュールを追加
 
 from singleton import Singleton
 import settings, logger, utilities
@@ -728,10 +729,10 @@ class DatasetTagEditor(Singleton):
             import os, math
             # maybe a good approximation of the optimal number of CPU processes
             pool_size = round(3.5*math.log(estimated_image_num)-12.65) if estimated_image_num > 0 else 1
-            pool_size = max(pool_size, 1)
+            pool_size = max(pool_size, 2) # 最小プロセス数を2に設定
             pool_size = min(pool_size, os.cpu_count() + 1)
             logger.write(f"Auto-tuned CPU process count = {pool_size}")
-        process_pool = Pool(pool_size)
+        # process_pool = Pool(pool_size) # この行は条件付きで作成するためコメントアウト
 
         if opts.profile:
             timestamp(epoch_ns, "Create process pool")
@@ -745,8 +746,37 @@ class DatasetTagEditor(Singleton):
             logger.write("Loading and checking images...")
             imgpaths = []
             images_raw = dict()
-            result = process_pool.map(load_image_wrapper, [(path, max_res, use_temp_dir) for path in filepaths])
-            result = [r for r in result if r]
+
+            # マルチプロセスを有効化する閾値
+            multi_process_threshold = settings.current.multi_process_threshold
+
+            if multi_process_threshold == 0 or len(filepaths) >= multi_process_threshold:
+                # 画像が閾値以上の場合はprocess_poolを使用
+                pool_size = settings.current.num_cpu_worker
+                if pool_size < 0:
+                    import os, math
+                    pool_size = round(3.5*math.log(len(filepaths))-12.65) if len(filepaths) > 0 else 1
+                    pool_size = max(pool_size, 2)
+                    pool_size = min(pool_size, os.cpu_count() + 1)
+                    logger.write(f"Auto-tuned CPU process count = {pool_size}")
+
+                process_pool = Pool(pool_size)
+                start_create_worker = time.time()
+                print(f"Creating Worker...")
+                result = process_pool.map(load_image_wrapper, [(path, max_res, use_temp_dir) for path in filepaths])
+                process_pool.close()
+                process_pool.join()
+                result = [r for r in result if r]
+                end_create_worker = time.time()
+                print(f"Creating Worker end... : {end_create_worker - start_create_worker:.4f} seconds")
+            else:
+                # 画像が閾値未満の場合は単一プロセスで処理
+                print(f"Processing {len(filepaths)} images in a single process.")
+                result = []
+                for path in filepaths:
+                    res = load_image_wrapper((path, max_res, use_temp_dir))
+                    if res:
+                        result.append(res)
 
             for img_path, img in result:
                 imgpaths.append(img_path)

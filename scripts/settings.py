@@ -19,6 +19,7 @@ class Settings(NamedTuple):
     interrogator_max_length: int = 30
     interrogator_model_dir: str = ""
     tagger_use_rating: bool = False
+    multi_process_threshold: int = 1000
     num_cpu_worker: int = -1
     batch_size_vit:int = 4
     batch_size_vit_large:int = 4
@@ -49,6 +50,7 @@ DESCRIPTIONS = {
     "interrogator_max_length": "Maximum text length for interrogator (for GIT only)",
     "interrogator_model_dir": "Path to directory for downloaded interrogator models",
     "tagger_use_rating": "Use Rating tags when using Tagger",
+    "multi_process_threshold": "Threshold for enabling multiprocessing when loading images (set 0 to always use multiprocessing)",
     "num_cpu_worker": "Number of CPU workers when loading or preprocessing images (set -1 to auto)",
     "batch_size_vit": "Inference batch size for ViT taggers",
     "batch_size_vit_large": "Inference batch size for ViT large taggers",
