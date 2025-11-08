@@ -175,14 +175,38 @@ def commit_hash():
         return stored_commit_hash
 
     try:
-        command = f'cd "{utilities.base_dir()}" & {git} rev-parse HEAD'
+        # クロスプラットフォーム対応:&&を使用
+        command = f'cd "{utilities.base_dir()}" && {git} rev-parse HEAD'
         result = launch.run(command)
-        stored_commit_hash = result.stdout.decode("utf-8").strip()
+
+        if result.returncode == 0:
+            stored_commit_hash = result.stdout.decode("utf-8").strip()
+        else:
+            stored_commit_hash = "<none>"
     except Exception:
         stored_commit_hash = "<none>"
 
     return stored_commit_hash
 
+def branch_name():
+    global stored_branch
+
+    if stored_branch is not None:
+        return stored_branch
+
+    try:
+        # 現在のブランチ名を取得
+        command = f'cd "{utilities.base_dir()}" && {git} rev-parse --abbrev-ref HEAD'
+        result = launch.run(command)
+
+        if result.returncode == 0:
+            stored_branch = result.stdout.decode("utf-8").strip()
+        else:
+            stored_branch = "<none>"
+    except Exception:
+        stored_branch = "<none>"
+
+    return stored_branch
 
 def versions_html():
     import torch
@@ -190,6 +214,7 @@ def versions_html():
     python_version = ".".join([str(x) for x in sys.version_info[0:3]])
     commit = commit_hash()
     short_commit = commit[0:8]
+    branch = branch_name()
 
     return f"""
 python: <span title="{sys.version}">{python_version}</span>
@@ -198,7 +223,9 @@ torch: {getattr(torch, '__long_version__',torch.__version__)}
  • 
 gradio: {gr.__version__}
  • 
-commit: <a href="https://github.com/toshiaki1729/dataset-tag-editor-standalone/commit/{commit}">{short_commit}</a>
+commit: <a href="https://github.com/osuiso-depot/dataset-tag-editor-standalone-jp/commit/{commit}/">{short_commit}</a>
+ • 
+branch: {branch}
 """
 
 
