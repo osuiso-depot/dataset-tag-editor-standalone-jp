@@ -56,7 +56,11 @@ class BatchEditCaptionsUI(UIBase):
                     label=t("batch_edit.use_regex.label"), value=cfg_batch_edit.use_regex
                 )
                 self.rb_sr_replace_target = gr.Radio(
-                    [t("batch_edit.replace_target.only_selected_tags"), t("batch_edit.replace_target.each_tags"), t("batch_edit.replace_target.entire_caption")],
+                    [
+                        (t("batch_edit.replace_target.only_selected_tags"), "Only Selected Tags"),
+                        (t("batch_edit.replace_target.each_tags"), "Each Tags"),
+                        (t("batch_edit.replace_target.entire_caption"), "Entire Caption")
+                    ],
                     value=cfg_batch_edit.target,
                     label=t("batch_edit.search_and_replace_in.label"),
                     interactive=True,
