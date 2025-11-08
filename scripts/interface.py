@@ -32,6 +32,7 @@ Savedfile = namedtuple("Savedfile", ["name"])
 GradioTemplateResponseOriginal = gradio.routes.templates.TemplateResponse
 git = "git"
 stored_commit_hash = None
+stored_branch = None
 interface = None
 
 

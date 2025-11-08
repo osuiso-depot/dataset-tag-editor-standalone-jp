@@ -44,6 +44,8 @@
   "settings.interrogator_model_dir.description": "ダウンロードされたインテロゲーターモデルのディレクトリパス",
   "settings.tagger_use_rating.label": "タガーでレーティングを使用",
   "settings.tagger_use_rating.description": "タガー使用時にレーティングタグを使用します",
+  "settings.multi_process_threshold.label": "マルチプロセス閾値",
+  "settings.multi_process_threshold.description": "画像読み込み時にマルチプロセスを有効にする閾値（0に設定すると常にマルチプロセスを使用）",
   "settings.num_cpu_worker.label": "CPUワーカー数",
   "settings.num_cpu_worker.description": "画像の読み込みや前処理時のCPUワーカー数（-1で自動設定）",
   "settings.batch_size_vit.label": "バッチサイズ（ViT）",

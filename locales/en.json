@@ -44,6 +44,8 @@
   "settings.interrogator_model_dir.description": "Path to directory for downloaded interrogator models",
   "settings.tagger_use_rating.label": "Tagger Use Rating",
   "settings.tagger_use_rating.description": "Use Rating tags when using Tagger",
+  "settings.multi_process_threshold.label": "Multi-process Threshold",
+  "settings.multi_process_threshold.description": "Threshold for enabling multiprocessing when loading images (set 0 to always use multiprocessing)",
   "settings.num_cpu_worker.label": "Number of CPU Workers",
   "settings.num_cpu_worker.description": "Number of CPU workers when loading or preprocessing images (set -1 to auto)",
   "settings.batch_size_vit.label": "Batch Size (ViT)",
