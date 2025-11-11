@@ -8,3 +8,6 @@ models/
 config.json
 settings.json
 launch_user.bat
+docs/
+tips/
+_temp/
